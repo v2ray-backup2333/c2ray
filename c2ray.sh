@@ -1090,21 +1090,21 @@ v2ray_install(){
 
 # 安装菜单
 install(){
-echo "----------------------------------------"
-echo "  1.安装 Caddy 环境"
-echo "  2.安装 PHP7+Sqlite3 环境"
+echo -e "----------------------------------------"
+echo -e "${Green}  1.安装 Caddy 环境 ${Font}"
+echo -e "${Green}  2.安装 PHP7+Sqlite3 环境 ${Font}"
 echo ""
-echo "  3.安装 typecho 博客"
-echo "  4.安装 wordpress 博客"
-echo "  5.安装 zblog 博客"
-echo "  6.安装 kodexplorer 可道云"
-echo "  7.安装 laverna 印象笔记"
+echo -e "${Green}  3.安装 typecho 博客 ${Font}"
+echo -e "${Green}  4.安装 wordpress 博客 ${Font}"
+echo -e "${Green}  5.安装 zblog 博客 ${Font}"
+echo -e "${Green}  6.安装 kodexplorer 可道云 ${Font}"
+echo -e "${Green}  7.安装 laverna 印象笔记 ${Font}"
 echo ""
-echo "  8.安装 v2ray 翻墙"
-echo "  9.安装 rinetd bbr 端口加速"
+echo -e "${Green}  8.安装 v2ray 翻墙 ${Font}"
+echo -e "${Green}  9.安装 rinetd bbr 端口加速 ${Font}"
 echo ""
-echo "  0.返回上级菜单"
-echo "----------------------------------------"
+echo -e "${Green}  0.返回上级菜单 ${Font}"
+echo -e "----------------------------------------"
 echo ""
 
 read -e -p "请输入对应的数字：" num
@@ -1159,18 +1159,18 @@ esac
 
 # 安装菜单
 uninstall(){
-echo "----------------------------------------"
-echo "  1.卸载 Caddy 环境"
-echo "  2.卸载 PHP7+Sqlite3 环境"
+echo -e "----------------------------------------"
+echo -e "${Green}  1.卸载 Caddy 环境 ${Font}"
+echo -e "${Green}  2.卸载 PHP7+Sqlite3 环境 ${Font}"
 echo ""
-echo "  3.卸载 v2ray 翻墙"
-echo "  4.卸载 rinetd bbr 端口加速"
+echo -e "${Green}  3.卸载 v2ray 翻墙 ${Font}"
+echo -e "${Green}  4.卸载 rinetd bbr 端口加速 ${Font}"
 echo ""
-echo "  5.删除 www 目录"
-echo "  6.一键卸载所有"
+echo -e "${Green}  5.删除 www 目录 ${Font}"
+echo -e "${Green}  6.一键卸载所有 ${Font}"
 echo ""
-echo "  0.返回上级菜单"
-echo "----------------------------------------"
+echo -e "${Green}  0.返回上级菜单 ${Font}"
+echo -e "----------------------------------------"
 echo ""
 
 read -e -p "请输入对应的数字：" num
@@ -1217,14 +1217,14 @@ esac
 
 # 安装菜单
 menu(){
-echo "----------------------------------------"
-echo "  1.进入 安装 菜单"
-echo "  2.进入 卸载 菜单"
+echo -e "----------------------------------------"
+echo -e "${Green}  1.进入 安装 菜单 ${Font}"
+echo -e "${Green}  2.进入 卸载 菜单 ${Font}"
 echo ""
-echo "  3.一键整站备份（一键打包/www目录 含数据库）"
+echo -e "${Green}  3.一键整站备份（一键打包/www目录 含数据库） ${Font}"
 echo ""
-echo "  0.退出脚本"
-echo "----------------------------------------"
+echo -e "${Green}  0.退出脚本 ${Font}"
+echo -e "----------------------------------------"
 echo ""
 
 read -e -p "请输入对应的数字：" num

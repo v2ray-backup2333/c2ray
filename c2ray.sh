@@ -1107,3 +1107,97 @@ if [[ $# > 0 ]];then
 else
 	main
 fi
+
+
+
+
+
+
+
+# 安装菜单
+menu(){
+echo "----------------------------------------"
+echo "  1.一键安装 Lxde+VNC 远程桌面"
+echo "  2.添加 Firefox 浏览器 和 简体中文字体"
+echo ""
+echo "  3.一键安装 Qemu+WindowsXP 虚拟机"
+echo ""
+echo "  4.启动 Lxde+VNC（+WindowsXP 如果已安装)"
+echo "  5.关闭 Lxde+VNC（+WindowsXP 如果已启动)"
+echo ""
+echo "  6.设置 WindowsXP 启动内存（默认512M）"
+echo ""
+echo "  7.自定义安装 Windows 系统版本"
+echo ""
+echo "  8.卸载所有"
+echo "  9.退出脚本"
+echo "----------------------------------------"
+echo ""
+
+read -e -p "请输入对应的数字：" num
+case $num in
+	1)
+	install_lxde_vnc
+	install_lxde_vnc_menu
+	;;
+	2)
+	add_firefox_ttf
+	;;
+	3)
+	check_vnc_install_qemu_win
+	install_qemu_win_menu
+	;;
+	4)
+	start_vnc
+	;;
+	5)
+	stop_vnc
+	;;
+	6)
+	set_win_ram
+	;;
+	7)
+	get_help
+	;;
+	8)
+	unstall_all
+	;;
+	9)
+	exit 0
+	;;
+	*)
+	clear
+	menu
+esac
+}
+
+
+
+
+# 检测root权限
+if [ `id -u` == 0 ]; then
+	echo "当前用户是 root 用户 开始安装流程"
+else
+	echo "当前用户不是root用户 请切换到 root 用户后重新执行脚本"
+	exit 1
+fi
+
+
+
+
+# 脚本菜单
+case "$1" in
+	windows)
+	win_iso_install
+	;;
+	windowsxp)
+	winxp_iso_install
+	;;
+	*)
+	clear
+	menu
+esac
+
+
+# 转载请保留版权：https://github.com/dylanbai8/Onekey_OpenVZ_Install_Windows
+

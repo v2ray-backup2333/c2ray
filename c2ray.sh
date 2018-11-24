@@ -95,26 +95,7 @@ if [[ -e ${conf_dir} ]]; then
 	clear
 	echo ""
 	echo -e "${Error} ${RedBG} 检测到你已安装环境 请勿重复执行 ${Font}"
-	echo -e "----------------------------------------------------------"
-	echo ""
-	echo -e "${Green} 一键安装 typecho 博客：${Font} bash c.sh -t"
-	echo -e "${Green} 一键安装 wordpress 博客：${Font} bash c.sh -w"
-	echo -e "${Green} 一键安装 zblog 博客：${Font} bash c.sh -z"
-	echo -e "${Green} 一键安装 kodexplorer 可道云：${Font} bash c.sh -k"
-	echo -e "${Green} 一键安装 laverna 印象笔记：${Font} bash c.sh -l"
-	echo -e "${Green} 一键整站备份：${Font} bash c.sh -a"
-	echo -e "${Green} 一键安装 v2ray 翻墙：${Font} bash c.sh -v"
-	echo -e "${Green} 一键安装 rinetd bbr 端口加速：${Font} bash c.sh -b"
-	echo ""
-	echo -e "${Green} 一键卸载 caddy：${Font} bash c.sh -unc"
-	echo -e "${Green} 一键卸载 php+sqlite：${Font} bash c.sh -unp"
-	echo -e "${Green} 一键卸载 v2ray：${Font} bash c.sh -unv"
-	echo -e "${Green} 一键卸载 rinetdbbr：${Font} bash c.sh -unb"
-	echo ""
-	echo -e "${Green} 提示：如果在上次执行中由于错误而中断了安装，请先执行 一键卸载 caddy ${Font}"
-	echo ""
-	echo -e "----------------------------------------------------------"
-	exit 1
+	pause_install
 
 else
 
@@ -125,17 +106,6 @@ else
 fi
 }
 
-
-#检测root权限
-is_root(){
-	if [ `id -u` == 0 ]
-		then echo -e "${OK} ${GreenBG} 当前用户是root用户，开始安装流程 ${Font}"
-		sleep 3
-	else
-		echo -e "${Error} ${RedBG} 当前用户不是root用户，请切换到root用户后重新执行脚本 ${Font}"
-		exit 1
-	fi
-}
 
 
 #更新源
@@ -193,7 +163,7 @@ check_system(){
 
 
 #检测依赖
-systemd_chack(){
+software_chack(){
 echo -e "${OK} ${GreenBG} 正在检测是否支持 systemd ${Font}"
 	for CMD in iptables grep cut xargs systemctl ip awk
 	do
@@ -542,18 +512,6 @@ EOF
 }
 
 
-#检查ssl证书是否生成
-check_ssl(){
-	echo -e "${OK} ${GreenBG} 正在等待域名证书生成 ${Font}"
-	sleep 8
-if [[ -e /root/.caddy/acme/acme-v02.api.letsencrypt.org/sites/${domain}/${domain}.key ]]; then
-	echo -e "${OK} ${GreenBG} SSL证书申请 成功 ${Font}"
-else
-	echo -e "${Error} ${RedBG} SSL证书申请 失败 请确认是否超出Let’s Encrypt申请次数或检查服务器网络 ${Font}"
-	echo -e "${Error} ${RedBG} 注意：证书每个IP每3小时10次 7天内每个子域名不超过5次总计不超过20次 ${Font}"
-	exit 1
-fi
-}
 
 
 #展示配置信息
@@ -1066,7 +1024,6 @@ uninstall
 
 #命令块执行列表
 v2ray_install(){
-	is_root
 	check_system
 	systemd_chack
 	install_hello
@@ -1079,7 +1036,6 @@ v2ray_install(){
 	caddy_install
 	default_html
 	caddy_conf_add
-	#check_ssl
 	show_information
 	restart_caddy
 }
@@ -1167,6 +1123,7 @@ echo -e "${Green}  3.卸载 v2ray 翻墙 ${Font}"
 echo -e "${Green}  4.卸载 rinetd bbr 端口加速 ${Font}"
 echo ""
 echo -e "${Green}  5.删除 www 目录 ${Font}"
+echo ""
 echo -e "${Green}  6.一键卸载所有 ${Font}"
 echo ""
 echo -e "${Green}  0.返回上级菜单 ${Font}"
@@ -1251,13 +1208,15 @@ esac
 
 
 # 检测root权限
+check_system
+software_chack
+
 if [ `id -u` == 0 ]; then
 	echo "当前用户是 root 用户 开始安装流程"
 else
 	echo "当前用户不是root用户 请切换到 root 用户后重新执行脚本"
 	exit 1
 fi
-
 
 menu
 

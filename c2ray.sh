@@ -1042,8 +1042,30 @@ fi
 }
 
 
+
+
+pause_install(){
+echo ""
+read -e -p "按任意键返回菜单 ..."
+clear
+install
+}
+
+
+
+
+pause_uninstall(){
+echo ""
+read -e -p "按任意键返回菜单 ..."
+clear
+uninstall
+}
+
+
+
+
 #命令块执行列表
-main(){
+v2ray_install(){
 	is_root
 	check_system
 	systemd_chack
@@ -1063,53 +1085,132 @@ main(){
 }
 
 
-#Bash执行选项
-if [[ $# > 0 ]];then
-	key="$1"
-	case $key in
-		-t|--typecho_install)
-		typecho_install
-		;;
-		-k|--kodexplorer_install)
-		kodexplorer_install
-		;;
-		-w|--wordpress_install)
-		wordpress_install
-		;;
-		-z|--zblog_install)
-		zblog_install
-		;;
-		-l|--laverna_install)
-		laverna_install
-		;;
-		-a|--bak_wwwroot)
-		bak_wwwroot
-		;;
-		-v|--v2ray_install)
-		v2ray_install
-		;;
-		-b|--rinetdbbr_install)
-		rinetdbbr_install
-		;;
-		-unc|--uninstall_caddy)
-		uninstall_caddy
-		;;
-		-unp|--uninstall_php_sqlite)
-		uninstall_php_sqlite
-		;;
-		-unv|--uninstall_v2ray)
-		uninstall_v2ray
-		;;
-		-unb|--uninstall_bbr)
-		uninstall_bbr
-		;;
-	esac
-else
-	main
-fi
 
 
 
+# 安装菜单
+install(){
+echo "----------------------------------------"
+echo "  1.安装 Caddy 环境"
+echo "  2.安装 PHP7+Sqlite3 环境"
+echo ""
+echo "  3.安装 typecho 博客"
+echo "  4.安装 wordpress 博客"
+echo "  5.安装 zblog 博客"
+echo "  6.安装 kodexplorer 可道云"
+echo "  7.安装 laverna 印象笔记"
+echo ""
+echo "  8.安装 v2ray 翻墙"
+echo "  9.安装 rinetd bbr 端口加速"
+echo ""
+echo "  0.返回上级菜单"
+echo "----------------------------------------"
+echo ""
+
+read -e -p "请输入对应的数字：" num
+case $num in
+	1)
+	uninstall_apache2
+	caddy_install
+	pause_install
+	;;
+	2)
+	php_sqlite_install
+	pause_install
+	;;
+	3)
+	typecho_install
+	pause_install
+	;;
+	4)
+	wordpress_install
+	pause_install
+	;;
+	5)
+	zblog_install
+	pause_install
+	;;
+	6)
+	kodexplorer_install
+	pause_install
+	;;
+	7)
+	laverna_install
+	pause_install
+	;;
+	8)
+	v2ray_install
+	pause_install
+	;;
+	9)
+	rinetdbbr_install
+	pause_install
+	;;
+	0)
+	exit 0
+	;;
+	*)
+	clear
+	menu
+esac
+}
+
+
+
+# 安装菜单
+uninstall(){
+echo "----------------------------------------"
+echo "  1.卸载 Caddy 环境"
+echo "  2.卸载 PHP7+Sqlite3 环境"
+echo ""
+echo "  3.卸载 v2ray 翻墙"
+echo "  4.卸载 rinetd bbr 端口加速"
+echo ""
+echo "  5.删除 www 目录"
+echo "  6.一键卸载所有"
+echo ""
+echo "  0.返回上级菜单"
+echo "----------------------------------------"
+echo ""
+
+read -e -p "请输入对应的数字：" num
+case $num in
+	1)
+	uninstall_caddy
+	pause_uninstall
+	;;
+	2)
+	uninstall_php_sqlite
+	pause_uninstall
+	;;
+	3)
+	uninstall_v2ray
+	pause_uninstall
+	;;
+	4)
+	uninstall_bbr
+	pause_uninstall
+	;;
+	5)
+	uninstall_www
+	pause_uninstall
+	;;
+	6)
+	uninstall_caddy
+	uninstall_php_sqlite
+	uninstall_v2ray
+	uninstall_bbr
+	uninstall_www
+	pause_uninstall
+	;;
+	0)
+	exit 0
+	;;
+	*)
+	clear
+	menu
+esac
+}
 
 
 
@@ -1117,52 +1218,27 @@ fi
 # 安装菜单
 menu(){
 echo "----------------------------------------"
-echo "  1.一键安装 Lxde+VNC 远程桌面"
-echo "  2.添加 Firefox 浏览器 和 简体中文字体"
+echo "  1.进入 安装 菜单"
+echo "  2.进入 卸载 菜单"
 echo ""
-echo "  3.一键安装 Qemu+WindowsXP 虚拟机"
+echo "  3.一键整站备份（一键打包/www目录 含数据库）"
 echo ""
-echo "  4.启动 Lxde+VNC（+WindowsXP 如果已安装)"
-echo "  5.关闭 Lxde+VNC（+WindowsXP 如果已启动)"
-echo ""
-echo "  6.设置 WindowsXP 启动内存（默认512M）"
-echo ""
-echo "  7.自定义安装 Windows 系统版本"
-echo ""
-echo "  8.卸载所有"
-echo "  9.退出脚本"
+echo "  0.退出脚本"
 echo "----------------------------------------"
 echo ""
 
 read -e -p "请输入对应的数字：" num
 case $num in
 	1)
-	install_lxde_vnc
-	install_lxde_vnc_menu
+	install
 	;;
 	2)
-	add_firefox_ttf
+	uninstall
 	;;
 	3)
-	check_vnc_install_qemu_win
-	install_qemu_win_menu
+	bak_wwwroot
 	;;
-	4)
-	start_vnc
-	;;
-	5)
-	stop_vnc
-	;;
-	6)
-	set_win_ram
-	;;
-	7)
-	get_help
-	;;
-	8)
-	unstall_all
-	;;
-	9)
+	0)
 	exit 0
 	;;
 	*)
@@ -1183,20 +1259,7 @@ else
 fi
 
 
-
-
-# 脚本菜单
-case "$1" in
-	windows)
-	win_iso_install
-	;;
-	windowsxp)
-	winxp_iso_install
-	;;
-	*)
-	clear
-	menu
-esac
+menu
 
 
 # 转载请保留版权：https://github.com/dylanbai8/Onekey_OpenVZ_Install_Windows

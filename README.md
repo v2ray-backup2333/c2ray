@@ -1,1 +1,1 @@
-# c2ray
+# 小内存VPS 一键安装 Caddy+PHP7+Sqlite3 环境 （支持VPS最小内存64M）

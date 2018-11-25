@@ -746,28 +746,57 @@ v2ray_conf_add(){
 	touch ${v2ray_conf}
 	cat <<EOF > ${v2ray_conf}
 {
-  "inbound": {
-	"port": ${getport3},
-	"listen":"127.0.0.1",
-	"protocol": "vmess",
-	"settings": {
-	  "clients": [
-		{
-		  "id": "${UUID}",
-		  "alterId": ${alterId}
-		}
-	  ]
-	},
-	"streamSettings": {
-	  "network": "ws",
-	  "wsSettings": {
-	  "path": "/${getv2ray_path}"
-	  }
-	}
-  },
-  "outbound": {
-	"protocol": "freedom",
-	"settings": {}
+  "log": {
+    "loglevel": "debug"
+  }, 
+  "inbounds": [
+    {
+      "port": ${getport3}, 
+      "listen": "127.0.0.1", 
+      "tag": "vmess-in", 
+      "protocol": "vmess", 
+      "settings": {
+        "clients": [
+          {
+	//注：UUID
+            "id": "${UUID}", 
+            "alterId": ${alterId}
+          }
+        ]
+      }, 
+      "streamSettings": {
+        "network": "ws", 
+        "wsSettings": {
+	//注：ws路径
+          "path": "/${getv2ray_path}", 
+          "headers": { }
+        }
+      }
+    }
+  ], 
+  "outbounds": [
+    {
+      "protocol": "freedom", 
+      "settings": { }, 
+      "tag": "direct"
+    }, 
+    {
+      "protocol": "blackhole", 
+      "settings": { }, 
+      "tag": "blocked"
+    }
+  ], 
+  "routing": {
+    "domainStrategy": "AsIs", 
+    "rules": [
+      {
+        "type": "field", 
+        "inboundTag": [
+          "vmess-in"
+        ], 
+        "outboundTag": "direct"
+      }
+    ]
   }
 }
 EOF
@@ -781,40 +810,106 @@ v2ray_user_config(){
 	touch ./V2rayPro/v2ray/config.json
 	cat <<EOF > ./V2rayPro/v2ray/config.json
 {
-  "inbound": {
-	"port": 1080,
-	"listen": "127.0.0.1",
-	"protocol": "socks",
-	"domainOverride": ["tls","http"],
-	"settings": {
-	  "auth": "noauth",
-	  "udp": false
-	}
+  "log": {
+    "loglevel": "debug"
   },
-  "outbound": {
-	"protocol": "vmess",
-	"settings": {
-	  "vnext": [
-		{
-		  "address": "${getdomain}",
-		  "port": ${getport2},
-		  "users": [
-			{
-			  "id": "${UUID}",
-			  "alterId": ${alterId}
-			}
-		  ]
-		}
-	  ]
-	},
-	"streamSettings": {
-	  "network": "ws",
-	  "security": "tls",
-	  "wsSettings": {
-		"path": "/${getv2ray_path}"
-	  }
-	}
-  }
+  "inbounds": [
+    {
+      "port": 1080,
+      "listen": "0.0.0.0",
+      "tag": "socks-in",
+      "protocol": "socks",
+      "settings": {
+        "auth": "noauth",
+        "udp": false
+      }
+    },
+    {
+      "port": 1087,
+      "listen": "0.0.0.0",
+      "tag": "http-in",
+      "protocol": "http",
+      "settings": {}
+    }
+  ],
+  "outbounds": [
+    {
+      "mux": {
+        "concurrency": 32,
+        "enabled": true
+      },
+      "protocol": "vmess",
+      "settings": {
+        "vnext": [
+          {
+            "users": [
+              {
+                //注：填写uuid
+                "id": "${UUID}",
+                "alterId": ${alterId},
+                "security": "auto"
+              }
+            ],
+            //注：填写域名、端口
+            "address": "${getdomain}",
+            "port": ${getport2}
+          }
+        ]
+      },
+      "streamSettings": {
+        "tlsSettings": {
+          "allowInsecure": false
+        },
+        "wsSettings": {
+          "headers": {
+            "User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.4489.62 Safari/537.36",
+            //注：填写对应头部
+            "Host": "HOST",
+            "Accept-Encoding": "gzip",
+            "Pragma": "no-cache"
+          },
+          //注：ws路径
+          "path": "/${getv2ray_path}"
+        },
+        "network": "ws",
+        "security": "tls"
+      },
+      "tag": "proxy"
+    },
+    {
+      "protocol": "blackhole",
+      "settings": {},
+      "tag": "blocked"
+    },
+    {
+      "protocol": "freedom",
+      "settings": {},
+      "tag": "dicert"
+    }
+  ],
+  "routing": {
+    //注：全域名规则匹配
+    "domainStrategy": "AsIs",
+    "rules": [
+      {
+        "type": "field",
+        "domain": [
+          //注：填写对应域名和host
+          "domain:domain.Name"
+        ],
+        "outboundTag": "dicert"
+      },
+      {
+        "type": "field",
+        "inboundTag": [
+          "socks-in",
+          "http-in"
+        ],
+        "outboundTag": "proxy"
+      }
+    ]
+  },
+  "other": {}
 }
 EOF
 
@@ -1178,7 +1273,8 @@ echo -e "----------------------------------------"
 echo -e "${Green}  1.进入 安装 菜单 ${Font}"
 echo -e "${Green}  2.进入 卸载 菜单 ${Font}"
 echo ""
-echo -e "${Green}  3.一键整站备份（一键打包/www目录 含数据库） ${Font}"
+echo -e "${Green}  3.修改 V2ray 配置 ${Font}"
+echo -e "${Green}  4.一键整站备份（一键打包/www目录 含数据库） ${Font}"
 echo ""
 echo -e "${Green}  0.退出脚本 ${Font}"
 echo -e "----------------------------------------"
